@@ -22,15 +22,15 @@ Starter questions per area, each with a default recommendation for the primary u
 
 ## inputs
 
-1. Where does the data come from, and in what format? Recommended: the simplest local source, such as a folder of files or a CSV.
-2. How big is a normal batch, and how big is the largest you expect? Recommended: up to 500 rows or 10 MB per run.
+1. Where does the data come from? Recommended: the simplest local source, such as a folder of files or a CSV.
+2. How big is the largest batch you expect? Recommended: up to 500 rows or 10 MB per run.
 3. How often does new data arrive? Recommended: once a day.
 4. What does one real example look like? Recommended: paste one line or one file name, with private data removed.
 
 ## outputs
 
-1. What exactly comes out, and where does it go? Recommended: one row per item in a Google Sheet, or one file in an `outbox/` folder.
-2. Who reads the output, and what do they do with it? Recommended: you, to decide what to do next.
+1. What exactly comes out? Recommended: one row per item in a Google Sheet, or one file in an `outbox/` folder.
+2. What does the reader do with the output? Recommended: you, to decide what to do next.
 3. What should happen if the same item comes in twice? Recommended: skip it and note the duplicate in a log file.
 
 ## integrations

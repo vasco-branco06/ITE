@@ -48,7 +48,7 @@ State: `answer inputs --state open --summary "Plain-text Java log lines: date, t
 
 [Area: Input data · 3/12 areas settled]
 
-How much log does the server write in a day, and where are the files?
+How much log does the server write in a day?
 
 Recommended: Up to 50 MB a day in /var/log/app/, read every 5 minutes.
 Why: It tells us the agent can read the whole day in one go and still meet the 10-minute goal.
@@ -78,7 +78,7 @@ That is fine, I will take the recommendation as an assumption and add a test tha
 
 [Area: Stack · 6/12 areas settled]
 
-Do you have a preferred language or place to run it?
+What should it be built with?
 
 Recommended: A Python script on the same server, run every 5 minutes by a scheduler.
 Why: Python reads logs easily, and running next to the logs needs no copying.
@@ -172,7 +172,7 @@ Noted: the Slack post goes on the Later list, not into version 1.
 
 [Area: Input data · 5/12 areas settled]
 
-Which form is it, and how many answers do you expect in a busy week?
+How many answers do you expect in a busy week?
 
 Recommended: The "Event signup" form, up to 200 answers a week, picked up by n8n's Typeform trigger.
 Why: 200 a week is small enough that one sheet and one trigger are plenty.
@@ -181,7 +181,7 @@ User: ok
 
 [Area: Output · 6/12 areas settled]
 
-Which columns should each row have, and when should the email arrive?
+Which columns should each row have?
 
 Recommended: Submitted time, name, email and each answer in its own column; the email arrives on Friday at 09:00 with the week's count.
 Why: One column per answer keeps the sheet easy to filter, and a fixed time makes the count easy to compare.

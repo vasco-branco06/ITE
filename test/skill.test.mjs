@@ -77,3 +77,11 @@ test('examples.md: two worked interviews (agent, automation), 10 to 15 turns, ea
   }
   assert.match(md, /"enough"|"chega"/i, 'one example stops early');
 });
+
+test('D-020: examples and question bank never join two asks with "and" in one question', () => {
+  for (const f of ['references/examples.md', 'references/question-bank.md']) {
+    const question = (l) => l.split(/(?<=[.!]) /).find((s) => s.includes('?')) ?? '';
+    const compound = read(f).split('\n').filter((l) => /, and [^?]*\?/.test(question(l)) && !/^(Recommended|Why|State):/.test(l.trim()));
+    assert.deepEqual(compound, [], f);
+  }
+});

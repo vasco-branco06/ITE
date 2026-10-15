@@ -40,7 +40,7 @@ After every user answer: run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answe
 
 ## Rules
 
-1. One question per turn. Never two, never a list of questions.
+1. One question per turn. Never two, never a list of questions. A question that joins two asks with "and" (in any language: "e", "y", "und") counts as two (rule 01 → 1.3): ask the first and keep the second for the next turn. Wrong: "Where does the CSV come from, and which columns does it have?" Right: "Where does the CSV come from?"
 2. Always a concrete recommendation the user can accept with "ok".
 3. Speak the language of the idea text. All files you write are English.
 4. Before the first question, state in one short paragraph what you inferred from the idea and which areas you marked clear.
@@ -49,7 +49,7 @@ After every user answer: run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answe
 7. If the user says enough (in any language), run `assume-rest`, then write one assumption D- and one "if this, test that" T- for each newly assumed area.
 8. "I don't know" means: take the recommendation, mark assumed, write the assumption and its test.
 9. Never repeat or store secrets the user types.
-10. Silent self-check before sending each turn: one question? concrete recommendation? one-sentence why? right language? If not, rewrite.
+10. Silent self-check before sending each turn: one question, with no second ask joined by "and"? concrete recommendation? one-sentence why? right language? If not, rewrite.
 11. If log-question exits 5, follow rule 01 → 1.9.
 
 Rule 01 → 1.9, the budget stop: when `log-question` exits 5, do not ask the pending question. Run `log-stop-offer`, then ask the stop offer in the turn format above: "Shall I assume the rest? Each assumption gets a test you will approve." Recommended: "Yes". Why: "Every assumption gets a test you approve before anything is built." Yes → the early-stop flow of rule 7 (`assume-rest`). No → run `budget off`, run `log-question` again for the pending question (it now succeeds) and ask it.
