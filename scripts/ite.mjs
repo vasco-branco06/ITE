@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { toZod, toPydantic, GenError } from './lib/gen-schemas.mjs';
 import { unsupportedKeywords } from './lib/validate.mjs';
 import { report, formatReport } from './lib/check.mjs';
+import { gate as runGate, formatGate } from './lib/gate.mjs';
 import { AREA_IDS, ASKING_ORDER, AREA_STATES, newState, readState, writeState, stateExists, questionCount } from './lib/state.mjs';
 
 const EXIT = { ok: 0, unsupported: 2, exists: 3, invalid: 4, budget: 5 };
@@ -94,6 +95,15 @@ const commands = {
       r ? `Checker: ${plural(r.errors, 'error')} · ${plural(r.warnings, 'warning')}${codes.length ? ` (${codes.join(', ')})` : ''}` : 'Checker: not run yet (compile runs it)',
       `Next step: ${next}`,
     ].join('\n')}\n`);
+  },
+
+  // Rule 06: exit 0 pass (prints the two fresh-session commands), 1 blocked (numbered blockers), 2 bad folder.
+  gate(argv) {
+    const folder = resolve(argv[0] ?? '.');
+    if (!existsSync(folder) || !statSync(folder).isDirectory()) fail(EXIT.unsupported, `${folder} is not a folder.`);
+    const blockers = runGate(folder, version());
+    process.stdout.write(formatGate(folder, blockers));
+    process.exit(blockers.length ? 1 : EXIT.ok);
   },
 
   // Every schema is checked and generated in memory first; nothing is written unless all succeed (T-012).
