@@ -1,0 +1,10 @@
+{
+  "name": "ite",
+  "version": "0.1.0",
+  "description": "Interviews you about an idea one question at a time, tests every assumption, and writes a spec folder Claude Code builds from.",
+  "author": {
+    "name": "Vasco Caldeira Branco"
+  },
+  "homepage": "https://github.com/vasco-branco06/ite",
+  "license": "MIT"
+}

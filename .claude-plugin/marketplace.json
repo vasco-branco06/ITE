@@ -1,0 +1,14 @@
+{
+  "name": "ite",
+  "description": "ITE (Integrated Thought Environment) plugin marketplace.",
+  "owner": {
+    "name": "Vasco Caldeira Branco"
+  },
+  "plugins": [
+    {
+      "name": "ite",
+      "source": "./",
+      "description": "Interviews you about an idea one question at a time, tests every assumption, and writes a spec folder Claude Code builds from."
+    }
+  ]
+}
