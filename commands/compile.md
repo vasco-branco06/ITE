@@ -52,7 +52,7 @@ When check reports 0 errors, write its error and warning counts into the INDEX.m
 
 ## Step 8: the outcome screen (R-025)
 
-Show one screen of at most 22 lines, in the user's language, in this order. Write no extra file.
+Show one screen of at most 22 lines in total, blank lines included (count them before you send; drop blank lines first, then shorten item 1), in the user's language, in this order. Write no extra file.
 
 1. What will be built, in at most 4 lines.
 2. One line per assumed area: the area, the assumption in plain words, and its D- and T- IDs (several IDs share the line when an area has more than one).

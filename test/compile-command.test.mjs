@@ -99,7 +99,7 @@ test('compile runs gen-schemas, then check --json, with at most 3 fix rounds', (
 });
 
 test('T-037 static: the outcome screen follows R-025', () => {
-  assert.match(body, /at most 22 lines/i);
+  assert.match(body, /at most 22 lines in total, blank lines included/i);
   assert.match(body, /user's language/);
   assert.match(body, /one line per assumed area/i);
   assert.ok(body.includes('You do not need to read the files: Claude Code reads them.'));
