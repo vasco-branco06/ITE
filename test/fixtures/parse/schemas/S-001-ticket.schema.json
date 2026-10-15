@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "S-001",
+  "title": "Ticket",
+  "description": "Ticket. Used by R-001.",
+  "type": "object"
+}

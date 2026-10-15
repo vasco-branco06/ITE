@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "cases": [
+    { "id": "T-001", "title": "One ticket per error", "proves": ["R-001"], "kind": "e2e", "given": "g", "when": "w", "then": ["t"] },
+    { "id": "T-002", "title": "Plain text log is rejected", "proves": ["D-002"], "kind": "assumption", "given": "g", "when": "w", "then": ["t"] },
+    { "id": "T-003", "title": "Jira retry", "proves": ["R-002"], "kind": "integration", "given": "g", "when": "w", "then": ["t"] }
+  ]
+}
