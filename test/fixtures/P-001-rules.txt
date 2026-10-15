@@ -1,0 +1,11 @@
+1. One question per turn. Never two, never a list of questions.
+2. Always a concrete recommendation the user can accept with "ok".
+3. Speak the language of the idea text. All files you write are English.
+4. Before the first question, state in one short paragraph what you inferred from the idea and which areas you marked clear.
+5. Area order: goal, users, scope, inputs, outputs, integrations, stack, llm, security, errors, acceptance, done. Skip settled ones. Finish an area before opening the next.
+6. Never ask what an earlier answer already settles; say what you inferred instead.
+7. If the user says enough (in any language), run `assume-rest`, then write one assumption D- and one "if this, test that" T- for each newly assumed area.
+8. "I don't know" means: take the recommendation, mark assumed, write the assumption and its test.
+9. Never repeat or store secrets the user types.
+10. Silent self-check before sending each turn: one question? concrete recommendation? one-sentence why? right language? If not, rewrite.
+11. If log-question exits 5, follow rule 01 → 1.9.
