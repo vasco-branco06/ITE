@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // ITE command-line entry point. Subcommands and exit codes: specs/commands.md in the ITE spec.
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { toZod, toPydantic, GenError } from './lib/gen-schemas.mjs';
 import { unsupportedKeywords } from './lib/validate.mjs';
+import { report, formatReport } from './lib/check.mjs';
 import { AREA_IDS, ASKING_ORDER, AREA_STATES, newState, readState, writeState, stateExists, questionCount } from './lib/state.mjs';
 
 const EXIT = { ok: 0, unsupported: 2, exists: 3, invalid: 4, budget: 5 };
@@ -55,6 +56,17 @@ const version = () => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.
 const commands = {
   '--version'() {
     process.stdout.write(`${version()}\n`);
+  },
+
+  // Exit 0 clean, 1 errors, 2 the checker itself failed (bad folder). Writes .ite/check-report.json when .ite/ exists.
+  check(argv) {
+    const { pos, flags } = parse(argv, ['json']);
+    const folder = resolve(pos[0] ?? '.');
+    if (!existsSync(folder) || !statSync(folder).isDirectory()) fail(EXIT.unsupported, `${folder} is not a folder.`);
+    const r = report(folder, version());
+    if (existsSync(join(folder, '.ite'))) writeFileSync(join(folder, '.ite', 'check-report.json'), `${JSON.stringify(r, null, 2)}\n`);
+    process.stdout.write(flags.json ? `${JSON.stringify(r, null, 2)}\n` : formatReport(r));
+    process.exit(r.errors ? 1 : EXIT.ok);
   },
 
   // Every schema is checked and generated in memory first; nothing is written unless all succeed (T-012).

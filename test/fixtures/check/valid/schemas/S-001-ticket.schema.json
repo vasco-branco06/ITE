@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "S-001",
+  "title": "Ticket",
+  "description": "Ticket sent to Jira. Used by R-002.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary",
+    "priority"
+  ],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "high"
+      ]
+    }
+  }
+}

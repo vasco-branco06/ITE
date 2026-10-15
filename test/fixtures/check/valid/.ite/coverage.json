@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "idea": "agent that reads logs and opens Jira tickets",
+  "language": "pt",
+  "created_at": "2026-10-15T17:01:30.794Z",
+  "updated_at": "2026-10-15T17:01:31.628Z",
+  "approved_at": "2026-10-15T17:01:31.628Z",
+  "mode": "scripted",
+  "question_budget": null,
+  "areas": [
+    {
+      "id": "goal",
+      "state": "clear",
+      "summary": "goal settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "users",
+      "state": "clear",
+      "summary": "users settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "scope",
+      "state": "clear",
+      "summary": "scope settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "inputs",
+      "state": "clear",
+      "summary": "inputs settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "outputs",
+      "state": "clear",
+      "summary": "outputs settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "integrations",
+      "state": "clear",
+      "summary": "integrations settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "security",
+      "state": "clear",
+      "summary": "security settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "stack",
+      "state": "clear",
+      "summary": "stack settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "llm",
+      "state": "clear",
+      "summary": "llm settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "errors",
+      "state": "clear",
+      "summary": "errors settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "acceptance",
+      "state": "clear",
+      "summary": "acceptance settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    },
+    {
+      "id": "done",
+      "state": "clear",
+      "summary": "done settled",
+      "decision_ids": [],
+      "test_ids": [],
+      "reason": null
+    }
+  ],
+  "history": [],
+  "stop_reason": "complete"
+}

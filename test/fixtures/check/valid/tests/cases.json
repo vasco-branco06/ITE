@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "T-001",
+      "title": "Error line becomes one ticket",
+      "proves": [
+        "R-001"
+      ],
+      "kind": "e2e",
+      "given": "g",
+      "when": "w",
+      "then": [
+        "t"
+      ]
+    },
+    {
+      "id": "T-002",
+      "title": "Ticket matches S-001",
+      "proves": [
+        "R-002"
+      ],
+      "kind": "integration",
+      "given": "g",
+      "when": "w",
+      "then": [
+        "t"
+      ]
+    },
+    {
+      "id": "T-003",
+      "title": "Non-JSON line is rejected",
+      "proves": [
+        "R-003"
+      ],
+      "kind": "unit",
+      "given": "g",
+      "when": "w",
+      "then": [
+        "t"
+      ]
+    },
+    {
+      "id": "T-004",
+      "title": "Classifier labels an error",
+      "proves": [
+        "R-001"
+      ],
+      "kind": "prompt",
+      "given": "g",
+      "when": "w",
+      "then": [
+        "t"
+      ]
+    },
+    {
+      "id": "T-005",
+      "title": "Plain-text log reveals the JSON assumption",
+      "proves": [
+        "D-005"
+      ],
+      "kind": "assumption",
+      "given": "g",
+      "when": "w",
+      "then": [
+        "t"
+      ]
+    }
+  ]
+}

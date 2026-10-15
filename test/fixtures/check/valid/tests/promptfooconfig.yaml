@@ -1,0 +1,12 @@
+description: Log to Jira prompt tests
+
+prompts:
+  - file://../prompts/P-001-classify-log.md
+
+tests:
+  - description: "T-004 Classifier labels an error"
+    vars:
+      input: level ERROR
+    assert:
+      - type: equals
+        value: error
