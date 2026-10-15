@@ -35,7 +35,7 @@ If there is no state:
 1. No idea given: ask the user, in one sentence, to describe the idea in one sentence. Stop until they answer.
 2. Detect the language of the idea (a short tag such as `pt`, `en`, `es`).
 3. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" init "<idea>" --lang <tag>`, adding `--quick` when quick mode was requested. If the folder is not writable, explain that in one sentence and stop.
-4. Infer: for every area the idea already answers, run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answer <area> --state clear --summary "<what the idea says>"` (or `--state not_applicable --reason "<one line>"`). Then tell the user, in one short paragraph, what you inferred and which areas you marked settled, and that they can say "enough" (in their language, for example "chega") at any time.
+4. Infer, using each area's "Clear when" line and hints in the skill's areas reference (a hint that says the idea settles an area means clear, for example a named language settles stack): for every area the idea already answers, run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answer <area> --state clear --summary "<what the idea says>"` (or `--state not_applicable --reason "<one line>"`). For every area the idea touches but does not settle (for example it names the input format but not where the file comes from), keep what it says: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answer <area> --state open --summary "<what the idea says>"`, and never ask again about that part. Then tell the user, in one short paragraph, what you inferred and which areas you marked settled, and that they can say "enough" (in their language, for example "chega") at any time.
 
 ## Step 4: the interview
 

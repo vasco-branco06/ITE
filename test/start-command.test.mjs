@@ -50,6 +50,10 @@ test('start creates a new state with language and --quick passed to init', () =>
   assert.match(body, /one sentence/i, 'no idea and no state: ask for the idea');
 });
 
+test('T-005 static: areas the idea only touches keep what it says as an open summary', () => {
+  assert.ok(body.includes(`${ITE} answer <area> --state open --summary`), 'partial facts from the idea are recorded, the area stays open');
+});
+
 test('every question is logged first; exit 5 leads to the stop offer', () => {
   assert.ok(body.includes(`${ITE} log-question`));
   assert.ok(body.includes(`${ITE} log-stop-offer`));
