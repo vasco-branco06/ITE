@@ -6,6 +6,12 @@ ITE is a Claude Code plugin. It turns a vague idea into a spec folder: requireme
 
 Status: in development, before v0.1.
 
+## ITE and IDE
+
+An IDE (integrated development environment) is where code gets written, run and debugged. An ITE is where you decide what the code must do before any of it exists: the questions, the decisions and the checks that prove the result works.
+
+Claude Code now writes most of the code, so typing it is rarely what slows a project down. What slows it down is the distance between what you meant and what the model guessed. ITE works on that distance before the build: every open point becomes a decision or an assumption with a test, the checker confirms the spec folder is complete and linked, and the build starts only when the gate passes. The IDE stays where it is, for the code that comes after.
+
 ## Who it is for
 
 GTM Engineers and technical marketers first, then founders and anyone else who builds with Claude Code.

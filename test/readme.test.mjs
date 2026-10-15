@@ -25,3 +25,8 @@ test('no placeholder text and no em dashes', () => {
   assert.doesNotMatch(readme, /will be documented|not implemented|TODO|TBD/i);
   assert.doesNotMatch(readme, /—/);
 });
+
+test('explains what an ITE is next to an IDE', () => {
+  assert.match(readme, /^## ITE and IDE$/m);
+  assert.match(readme, /integrated development environment/i);
+});
