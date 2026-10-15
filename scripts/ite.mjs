@@ -3,20 +3,23 @@
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { AREA_IDS, newState, readState, writeState, stateExists, questionCount } from './lib/state.mjs';
+import { AREA_IDS, ASKING_ORDER, AREA_STATES, newState, readState, writeState, stateExists, questionCount } from './lib/state.mjs';
 
 const EXIT = { ok: 0, exists: 3, invalid: 4, budget: 5 };
 const folder = process.cwd();
 
-// Splits argv into positionals and --flags (a flag takes the next value unless it is boolean).
-function parse(argv, booleans = []) {
+// Splits argv into positionals and --flags. A flag takes the next value unless it is boolean;
+// a repeatable flag collects its values in an array.
+function parse(argv, booleans = [], repeatable = []) {
   const pos = [];
-  const flags = {};
+  const flags = Object.fromEntries(repeatable.map((name) => [name, []]));
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
+    const name = a.slice(2);
     if (!a.startsWith('--')) pos.push(a);
-    else if (booleans.includes(a.slice(2))) flags[a.slice(2)] = true;
-    else flags[a.slice(2)] = argv[++i];
+    else if (booleans.includes(name)) flags[name] = true;
+    else if (repeatable.includes(name)) flags[name].push(argv[++i]);
+    else flags[name] = argv[++i];
   }
   return { pos, flags };
 }
@@ -74,6 +77,54 @@ const commands = {
     const { flags } = parse(argv);
     const state = loadState();
     appendTurn(state, { kind: 'stop_offer', area: 'stop', question: flags.question, recommended: flags.recommended });
+    save(state);
+  },
+
+  next() {
+    const state = loadState();
+    const open = ASKING_ORDER.find((id) => state.areas.find((a) => a.id === id).state === 'open');
+    process.stdout.write(`${open ?? 'none'}\n`);
+  },
+
+  answer(argv) {
+    const { pos, flags } = parse(argv, ['accepted'], ['decision', 'test']);
+    const state = loadState();
+    const area = state.areas.find((a) => a.id === pos[0]);
+    if (!area) fail(EXIT.invalid, `Unknown area "${pos[0]}". Areas: ${AREA_IDS.join(', ')}.`);
+    if (!AREA_STATES.includes(flags.state)) fail(EXIT.invalid, `--state must be one of ${AREA_STATES.join(', ')}.`);
+    if (flags.state === 'not_applicable' && !flags.reason) fail(EXIT.invalid, 'not_applicable needs --reason "<one line>".');
+    if (['clear', 'assumed'].includes(flags.state) && !flags.summary) fail(EXIT.invalid, `${flags.state} needs --summary "<text>".`);
+
+    area.state = flags.state;
+    if (flags.summary !== undefined) area.summary = flags.summary;
+    area.reason = flags.state === 'not_applicable' ? flags.reason : null;
+    for (const d of flags.decision) if (!area.decision_ids.includes(d)) area.decision_ids.push(d);
+    for (const t of flags.test) if (!area.test_ids.includes(t)) area.test_ids.push(t);
+
+    if (flags.answer !== undefined) {
+      const turn = state.history.findLast((t) => (t.kind ?? 'question') === 'question' && t.area === area.id && t.answer === null);
+      if (!turn) fail(EXIT.invalid, `No unanswered question for "${area.id}" to attach --answer to.`);
+      turn.answer = flags.answer;
+      turn.accepted_recommendation = Boolean(flags.accepted);
+    }
+    if (state.stop_reason === null && state.areas.every((a) => a.state !== 'open')) state.stop_reason = 'complete';
+    save(state);
+  },
+
+  'assume-rest'() {
+    const state = loadState();
+    const assumed = state.areas.filter((a) => a.state === 'open');
+    for (const a of assumed) a.state = 'assumed';
+    state.stop_reason = 'user_stopped';
+    save(state);
+    process.stdout.write(assumed.length ? `${assumed.map((a) => a.id).join('\n')}\n` : 'none\n');
+  },
+
+  approve() {
+    const state = loadState();
+    const open = state.areas.filter((a) => a.state === 'open').map((a) => a.id);
+    if (open.length) fail(EXIT.invalid, `Cannot approve: still open: ${open.join(', ')}.`);
+    state.approved_at = new Date().toISOString();
     save(state);
   },
 

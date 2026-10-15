@@ -6,6 +6,9 @@ import { validate } from './validate.mjs';
 
 // Rule 01 section 1.2, in table order (also the S-001 enum order).
 export const AREA_IDS = ['goal', 'users', 'scope', 'inputs', 'outputs', 'integrations', 'security', 'stack', 'llm', 'errors', 'acceptance', 'done'];
+// Rule 01 section 1.4: the order areas are asked in (later areas depend on earlier ones).
+export const ASKING_ORDER = ['goal', 'users', 'scope', 'inputs', 'outputs', 'integrations', 'stack', 'llm', 'security', 'errors', 'acceptance', 'done'];
+export const AREA_STATES = ['open', 'clear', 'assumed', 'not_applicable'];
 export const QUICK_BUDGET = 5;
 
 const schemaPath = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'schemas', 'coverage.schema.json');
