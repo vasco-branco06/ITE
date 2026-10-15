@@ -1,0 +1,58 @@
+name: Run report
+description: Tell us how one ITE run went, from /ite:start to the end of /ite:build.
+labels: [run-report]
+body:
+  - type: dropdown
+    id: idea-type
+    attributes:
+      label: Idea type
+      options:
+        - Agent
+        - Automation
+        - Web app
+        - CLI or script
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Full interview
+        - Quick (--quick)
+        - Full interview, manual mode (no Node)
+        - Quick (--quick), manual mode (no Node)
+    validations:
+      required: true
+  - type: input
+    id: questions
+    attributes:
+      label: Questions
+      description: How many interview questions you answered.
+    validations:
+      required: true
+  - type: dropdown
+    id: finished
+    attributes:
+      label: Finished
+      description: y if the build session ended with the gate passed and the end-to-end test on the final screen passing.
+      options:
+        - "y"
+        - "n"
+    validations:
+      required: true
+  - type: dropdown
+    id: use-again
+    attributes:
+      label: Would use again
+      options:
+        - "y"
+        - "n"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional. Where you got stuck, what surprised you.
