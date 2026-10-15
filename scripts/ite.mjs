@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // ITE command-line entry point. Subcommands and exit codes: specs/commands.md in the ITE spec.
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+import { join, dirname, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { toZod, toPydantic, GenError } from './lib/gen-schemas.mjs';
 import { unsupportedKeywords } from './lib/validate.mjs';
@@ -67,6 +67,33 @@ const commands = {
     if (existsSync(join(folder, '.ite'))) writeFileSync(join(folder, '.ite', 'check-report.json'), `${JSON.stringify(r, null, 2)}\n`);
     process.stdout.write(flags.json ? `${JSON.stringify(r, null, 2)}\n` : formatReport(r));
     process.exit(r.errors ? 1 : EXIT.ok);
+  },
+
+  // Coverage from .ite/coverage.json plus the summary of .ite/check-report.json once compile has written it.
+  status(argv) {
+    const dir = resolve(argv[0] ?? '.');
+    if (!stateExists(dir)) fail(EXIT.invalid, `No .ite/coverage.json in ${dir}. Run start first.`);
+    const state = readState(dir);
+    const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+    const by = (s) => state.areas.filter((a) => a.state === s);
+    const open = ASKING_ORDER.filter((id) => state.areas.find((a) => a.id === id).state === 'open');
+    const untested = by('assumed').filter((a) => !a.test_ids.length).map((a) => a.id);
+    const reportFile = join(dir, '.ite', 'check-report.json');
+    const r = existsSync(reportFile) ? JSON.parse(readFileSync(reportFile, 'utf8')) : null;
+    const codes = r && [...new Set(r.findings.map((f) => f.code))];
+    const next = open.length ? `run start to finish the "${open[0]}" area`
+      : !state.approved_at ? 'run start to approve the interview'
+      : !r ? 'run compile'
+      : r.errors ? 'fix the checker errors, then run check'
+      : 'run build';
+    process.stdout.write(`${[
+      `ITE status - ${basename(dir)}`,
+      `Areas: ${state.areas.length} · clear ${by('clear').length} · assumed ${by('assumed').length} (${by('assumed').length - untested.length} tested) · not applicable ${by('not_applicable').length} · open ${open.length}`,
+      `Open: ${open.join(', ') || 'none'}`,
+      `Assumptions without test: ${untested.join(', ') || 'none'}`,
+      r ? `Checker: ${plural(r.errors, 'error')} · ${plural(r.warnings, 'warning')}${codes.length ? ` (${codes.join(', ')})` : ''}` : 'Checker: not run yet (compile runs it)',
+      `Next step: ${next}`,
+    ].join('\n')}\n`);
   },
 
   // Every schema is checked and generated in memory first; nothing is written unless all succeed (T-012).
