@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "S-004",
+  "title": "CheckReport",
+  "description": "Output of ite.mjs check --json and .ite/check-report.json. Used by R-014, R-015, R-016, R-022.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ite_version", "folder", "checked_at", "errors", "warnings", "findings", "counts"],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1, "maximum": 1 },
+    "ite_version": { "type": "string" },
+    "folder": { "type": "string" },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "errors": { "type": "integer", "minimum": 0 },
+    "warnings": { "type": "integer", "minimum": 0 },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["R", "D", "S", "P", "T", "F"],
+      "properties": {
+        "R": { "type": "integer", "minimum": 0 },
+        "D": { "type": "integer", "minimum": 0 },
+        "S": { "type": "integer", "minimum": 0 },
+        "P": { "type": "integer", "minimum": 0 },
+        "T": { "type": "integer", "minimum": 0 },
+        "F": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "severity", "file", "message", "fix"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^[EW]-[A-Z-]+$" },
+          "severity": { "type": "string", "enum": ["error", "warning"] },
+          "file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "id": { "type": "string" },
+          "message": { "type": "string" },
+          "fix": { "type": "string" }
+        }
+      }
+    }
+  }
+}

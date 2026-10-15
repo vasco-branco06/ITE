@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "S-003",
+  "title": "Decision",
+  "description": "Shape of one DECISIONS.md entry as the parser reads it. Used by R-007, R-013.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "kind", "status", "affects", "tripwires"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^D-[0-9]{3}$" },
+    "title": { "type": "string", "maxLength": 120 },
+    "kind": { "type": "string", "enum": ["decision", "assumption"] },
+    "status": { "type": "string", "enum": ["active", "withdrawn"] },
+    "affects": { "type": "array", "items": { "type": "string", "pattern": "^(R|F)-[0-9]+(\\.[0-9]+)*$" } },
+    "tripwires": { "type": "array", "items": { "type": "string", "pattern": "^T-[0-9]{3}$" }, "description": "Required non-empty when kind is assumption" }
+  }
+}
