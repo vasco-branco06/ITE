@@ -43,7 +43,7 @@ Repeat until no area is open:
 
 1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" next` to get the area to ask about.
 2. Before asking, log the question: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" log-question <area> --question "<question>" --recommended "<recommendation>"`. If it exits 5, do not ask that question; go to step 5.
-3. Ask it in the skill's turn format and wait for the answer.
+3. Ask it in the skill's turn format and wait for the answer. The header count `n/12 areas settled` is the number of areas whose state is not open in `.ite/coverage.json` right now; read it from the file, never estimate it.
 4. Write the answer before anything else: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answer <area> --state <clear|assumed|not_applicable|open> --summary "<summary>" --answer "<the user's reply>"`, adding `--accepted` when they took the recommendation. An area that needs more questions stays `open`. "I don't know" means `assumed` with the recommendation, plus `--decision D-xxx --test T-xxx` (the next free numbers in the state).
 5. If the user says enough in any language ("enough", "stop", "that's it", "chega", "basta", "já chega", "pára", or the same in another language), go to step 6.
 
@@ -51,12 +51,12 @@ Repeat until no area is open:
 
 Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" log-stop-offer --question "<the offer in the user's language>" --recommended "<Yes, in the user's language>"`, then ask, in the turn format: "Shall I assume the rest? Each assumption gets a test you will approve." Recommended: Yes. Why: "Every assumption gets a test you approve before anything is built."
 
-- Yes: go to step 6.
-- No: run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" budget off`, log the pending question again with `log-question` (it now succeeds), ask it, and continue step 4. Say nothing about the budget.
+- Yes: go to step 6, and run `assume-rest` there as `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" assume-rest --answer "<the user's reply>" --accepted`.
+- No: run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" budget off --answer "<the user's reply>"`, log the pending question again with `log-question` (it now succeeds), ask it, and continue step 4. Say nothing about the budget.
 
 ## Step 6: early stop
 
-Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" assume-rest`. It prints the areas it turned into assumed. For each one, choose ITE's recommended answer, then record one assumption and one "if this, test that" test for it: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answer <area> --state assumed --summary "<the assumption>" --decision D-xxx --test T-xxx`, using the next free D- and T- numbers. Then go to step 7.
+Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" assume-rest` (add `--answer "<the user's reply>" --accepted` when you came here from a Yes to the stop offer). It prints the areas it turned into assumed. For each one, choose ITE's recommended answer, then record one assumption and one "if this, test that" test for it: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ite.mjs" answer <area> --state assumed --summary "<the assumption>" --decision D-xxx --test T-xxx`, using the next free D- and T- numbers. Then go to step 7.
 
 ## Step 7: approval
 

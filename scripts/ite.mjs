@@ -54,6 +54,15 @@ function appendTurn(state, turn) {
 
 const version = () => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '.claude-plugin', 'plugin.json'), 'utf8')).version;
 
+// --answer on assume-rest (yes) or budget off (no) stores the reply on the pending stop offer turn.
+function answerStopOffer(state, flags) {
+  if (flags.answer === undefined) return;
+  const turn = state.history.findLast((t) => t.kind === 'stop_offer' && t.answer === null);
+  if (!turn) fail(EXIT.invalid, 'No unanswered stop offer to attach --answer to.');
+  turn.answer = flags.answer;
+  turn.accepted_recommendation = Boolean(flags.accepted);
+}
+
 const commands = {
   '--version'() {
     process.stdout.write(`${version()}\n`);
@@ -194,8 +203,10 @@ const commands = {
     save(state);
   },
 
-  'assume-rest'() {
+  'assume-rest'(argv) {
+    const { flags } = parse(argv, ['accepted']);
     const state = loadState();
+    answerStopOffer(state, flags);
     const assumed = state.areas.filter((a) => a.state === 'open');
     for (const a of assumed) a.state = 'assumed';
     state.stop_reason = 'user_stopped';
@@ -212,8 +223,10 @@ const commands = {
   },
 
   budget(argv) {
-    if (argv[0] !== 'off') fail(EXIT.invalid, 'Usage: budget off');
+    const { pos, flags } = parse(argv, ['accepted']);
+    if (pos[0] !== 'off') fail(EXIT.invalid, 'Usage: budget off [--answer "<reply>"]');
     const state = loadState();
+    answerStopOffer(state, flags);
     state.question_budget = null;
     save(state);
   },

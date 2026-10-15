@@ -68,3 +68,9 @@ test('early stop and approval run through the script', () => {
   assert.ok(body.includes(`${ITE} approve`));
   assert.match(body, /\/ite:compile/);
 });
+
+test('the stop offer reply is recorded, and the turn header count is read from the state', () => {
+  assert.ok(body.includes(`${ITE} assume-rest --answer`), 'yes path stores the reply');
+  assert.ok(body.includes(`${ITE} budget off --answer`), 'no path stores the reply');
+  assert.match(body, /areas whose state is not open/i, 'header count comes from coverage.json, never estimated');
+});

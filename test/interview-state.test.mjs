@@ -123,3 +123,26 @@ test('approve refuses while an area is open (exit 4), then sets approved_at', ()
   assert.equal(run(dir, 'approve').status, 0);
   assert.ok(!Number.isNaN(Date.parse(readState(dir).approved_at)));
 });
+
+test('the stop offer answer is stored: assume-rest --answer --accepted (yes) and budget off --answer (no)', () => {
+  const yes = fresh();
+  run(yes, 'log-stop-offer', '--question', 'Assumo o resto?', '--recommended', 'Sim');
+  assert.equal(run(yes, 'assume-rest', '--answer', 'ok', '--accepted').status, 0);
+  const y = readState(yes).history.at(-1);
+  assert.deepEqual([y.kind, y.answer, y.accepted_recommendation], ['stop_offer', 'ok', true]);
+
+  const no = fresh();
+  run(no, 'log-stop-offer', '--question', 'Assumo o resto?', '--recommended', 'Sim');
+  assert.equal(run(no, 'budget', 'off', '--answer', 'não').status, 0);
+  const n = readState(no).history.at(-1);
+  assert.deepEqual([n.kind, n.answer, n.accepted_recommendation], ['stop_offer', 'não', false]);
+  assert.equal(readState(no).question_budget, null);
+});
+
+test('--answer with no pending stop offer is refused (exit 4) and writes nothing', () => {
+  const dir = fresh();
+  const before = readFileSync(join(dir, '.ite', 'coverage.json'), 'utf8');
+  assert.equal(run(dir, 'assume-rest', '--answer', 'ok').status, 4);
+  assert.equal(run(dir, 'budget', 'off', '--answer', 'não').status, 4);
+  assert.equal(readFileSync(join(dir, '.ite', 'coverage.json'), 'utf8'), before);
+});
