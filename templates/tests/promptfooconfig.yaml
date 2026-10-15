@@ -1,0 +1,25 @@
+# Prompt tests for <!-- ite: fill project name -->. One test per P- behaviour; each description starts with its T- id.
+# Run: npx promptfoo@latest eval -c tests/promptfooconfig.yaml (needs the model provider key in your environment).
+#
+# When the llm area is not applicable, replace everything below with:
+#   # Not applicable
+#   # Area: llm
+#   # Reason: <one-sentence reason>
+#   # Decided in: D-xxx
+#   tests: []
+
+description: ite fill project name prompt tests
+
+prompts:
+  - file://../prompts/P-xxx-slug.md
+
+providers:
+  - id: ite-fill-provider-and-model
+
+tests:
+  - description: "T-xxx ite fill behaviour"
+    vars:
+      input: ite fill input
+    assert:
+      - type: contains
+        value: ite fill expected text

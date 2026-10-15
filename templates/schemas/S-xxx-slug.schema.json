@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "S-xxx",
+  "title": "ite: fill PascalCase name",
+  "description": "ite: fill what this shape is. Used by R-xxx. File name S-xxx-<kebab-slug>.schema.json. Only D-015 keywords.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {}
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "T-001",
+      "title": "ite: fill title, same as acceptance.md",
+      "proves": ["R-001"],
+      "kind": "e2e",
+      "given": "ite: fill given",
+      "when": "ite: fill when",
+      "then": ["ite: fill one observable outcome per item"]
+    }
+  ]
+}
