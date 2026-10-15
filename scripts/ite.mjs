@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 // ITE command-line entry point. Subcommands and exit codes: specs/commands.md in the ITE spec.
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { toZod, toPydantic, GenError } from './lib/gen-schemas.mjs';
+import { unsupportedKeywords } from './lib/validate.mjs';
 import { AREA_IDS, ASKING_ORDER, AREA_STATES, newState, readState, writeState, stateExists, questionCount } from './lib/state.mjs';
 
-const EXIT = { ok: 0, exists: 3, invalid: 4, budget: 5 };
+const EXIT = { ok: 0, unsupported: 2, exists: 3, invalid: 4, budget: 5 };
 const folder = process.cwd();
 
 // Splits argv into positionals and --flags. A flag takes the next value unless it is boolean;
@@ -48,10 +50,42 @@ function appendTurn(state, turn) {
   state.history.push({ n: state.history.length + 1, ...turn, answer: null, accepted_recommendation: false, at: new Date().toISOString() });
 }
 
+const version = () => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '.claude-plugin', 'plugin.json'), 'utf8')).version;
+
 const commands = {
   '--version'() {
-    const manifest = join(dirname(fileURLToPath(import.meta.url)), '..', '.claude-plugin', 'plugin.json');
-    process.stdout.write(`${JSON.parse(readFileSync(manifest, 'utf8')).version}\n`);
+    process.stdout.write(`${version()}\n`);
+  },
+
+  // Every schema is checked and generated in memory first; nothing is written unless all succeed (T-012).
+  'gen-schemas'(argv) {
+    const dir = join(argv[0] ?? '.', 'schemas');
+    if (!existsSync(dir)) fail(EXIT.invalid, `No schemas/ folder in ${argv[0] ?? '.'}.`);
+    const problems = [];
+    const outputs = [];
+    for (const file of readdirSync(dir).filter((f) => /^S-\d{3}.*\.schema\.json$/.test(f)).sort()) {
+      let schema;
+      try {
+        schema = JSON.parse(readFileSync(join(dir, file), 'utf8'));
+      } catch (e) {
+        fail(EXIT.invalid, `${file}: not valid JSON: ${e.message}`);
+      }
+      const unsupported = unsupportedKeywords(schema);
+      if (unsupported.length) {
+        problems.push(...unsupported.map((e) => `${file} ${e.path || '/'}: ${e.message}`));
+        continue;
+      }
+      try {
+        const base = file.replace(/\.schema\.json$/, '');
+        outputs.push([`${base}.zod.ts`, toZod(schema, file, version())], [`${base}.py`, toPydantic(schema, file, version())]);
+      } catch (e) {
+        if (!(e instanceof GenError)) throw e;
+        problems.push(`${file}: E-SCHEMA-UNSUPPORTED: ${e.message}`);
+      }
+    }
+    if (problems.length) fail(EXIT.unsupported, `Nothing generated. Outside the D-015 subset:\n${problems.map((p) => `  ${p}`).join('\n')}`);
+    for (const [name, text] of outputs) writeFileSync(join(dir, name), text);
+    process.stdout.write(`${outputs.length} files written\n`);
   },
 
   init(argv) {

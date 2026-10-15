@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "S-002",
+  "title": "Ticket",
+  "description": "Ticket sent to Jira. Used by R-002.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "priority", "reporter", "source"],
+  "properties": {
+    "summary": { "type": "string", "minLength": 5, "maxLength": 120, "description": "One-line title" },
+    "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+    "reporter": { "type": "string", "format": "email" },
+    "source": {
+      "type": "object",
+      "required": ["host"],
+      "properties": {
+        "host": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "labels": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+    "due": { "type": ["string", "null"], "format": "date" }
+  }
+}
